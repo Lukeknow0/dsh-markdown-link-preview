@@ -1,0 +1,3 @@
+- insert:
+    - id: markdown-link-preview
+      name: 'dsh-markdown-link-preview'
