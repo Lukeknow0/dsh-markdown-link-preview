@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../src/index.js"],
+  "sourcesContent": ["export const name = 'dsh-markdown-link-preview'\n\n// This plugin runs entirely in the DSH Web client. The empty host half makes\n// it safe to mount through the normal DSH bundle mechanism.\nexport function apply() {}\n"],
+  "mappings": ";AAAO,IAAM,OAAO;AAIb,SAAS,QAAQ;AAAC;",
+  "names": []
+}
