@@ -1,6 +1,6 @@
 {
   "name": "dsh-markdown-link-preview",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Open same-origin Markdown output links inside DSH Better Sidebar instead of an external app.",
   "type": "module",
   "main": "lib/index.js",
@@ -15,12 +15,20 @@
     "cordis.patch.yml"
   ],
   "license": "MIT",
-  "keywords": ["dsh", "deepseek-harness", "markdown", "preview", "better-sidebar"],
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "markdown",
+    "preview",
+    "better-sidebar"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Lukeknow0/dsh-markdown-link-preview.git"
   },
-  "bugs": {"url": "https://github.com/Lukeknow0/dsh-markdown-link-preview/issues"},
+  "bugs": {
+    "url": "https://github.com/Lukeknow0/dsh-markdown-link-preview/issues"
+  },
   "homepage": "https://github.com/Lukeknow0/dsh-markdown-link-preview#readme",
   "peerDependencies": {
     "dsh-better-sidebar": ">=0.13.0",
@@ -37,15 +45,22 @@
   },
   "dsh": {
     "client": {
-      "inject": ["dsh-better-sidebar"],
+      "inject": [
+        "dsh-better-sidebar"
+      ],
       "platform": "web"
     },
-    "bundle": {"patch": "./cordis.patch.yml"}
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
   },
   "scripts": {
     "build": "node scripts/build.mjs",
+    "prepare": "npm run build",
     "test": "node --test",
     "pack:check": "npm pack --dry-run"
   },
-  "engines": {"node": ">=20"}
+  "engines": {
+    "node": ">=20"
+  }
 }
