@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
-import { displayName, isMarkdownOutputLink, isSafePreviewUrl, markdownTabSeed } from './core.js'
+import { displayName, extractMarkdownPath, isMarkdownOutputLink, isSafePreviewUrl, markdownTabSeed } from './core.js'
 
 export const inject = ['betterSidebar']
 
@@ -100,14 +100,30 @@ export function apply(ctx) {
   ctx.effect(() => {
     const onClick = event => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
-      const anchor = event.target instanceof Element ? event.target.closest('a[href]') : null
-      if (!anchor || anchor.closest('[data-dsh-markdown-link-preview-ignore]')) return
-      const href = anchor.getAttribute('href')
-      if (!href || !isSafePreviewUrl(href, window.location.href) || !isMarkdownOutputLink(anchor, window.location.href)) return
+      const source = event.target instanceof Element
+        ? event.target.closest('a[href], button, [role="button"], [data-file-path]')
+        : null
+      if (!source || source.closest('[data-dsh-markdown-link-preview-ignore]')) return
+
+      const href = source.getAttribute('href')
+      if (href && isSafePreviewUrl(href, window.location.href) && isMarkdownOutputLink(source, window.location.href)) {
+        event.preventDefault()
+        event.stopPropagation()
+        const url = new URL(href, window.location.href).href
+        sidebar.openTab(markdownTabSeed(url, displayName(source, href, window.location.href)))
+        return
+      }
+
+      // DSH tool rows expose workspace file references as buttons rather than
+      // anchors (for example: "读取 · docs/README.md"). Route those paths
+      // through Better Sidebar's native file opener, which picks its Markdown
+      // viewer and preserves the session workspace boundary.
+      const path = source.getAttribute('data-file-path') || extractMarkdownPath(source.textContent)
+      const sessionId = sidebar.getSnapshot?.().sessionId
+      if (!path || !sessionId || !sidebar.features?.includes('openFile')) return
       event.preventDefault()
       event.stopPropagation()
-      const url = new URL(href, window.location.href).href
-      sidebar.openTab(markdownTabSeed(url, displayName(anchor, href, window.location.href)))
+      sidebar.openFile({ sessionId }, path)
     }
     document.addEventListener('click', onClick, true)
     return () => document.removeEventListener('click', onClick, true)

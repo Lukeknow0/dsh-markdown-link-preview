@@ -1,6 +1,6 @@
 {
   "name": "dsh-markdown-link-preview",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Open same-origin Markdown output links inside DSH Better Sidebar instead of an external app.",
   "type": "module",
   "main": "lib/index.js",

@@ -23,6 +23,18 @@ export function isMarkdownOutputLink(anchor, locationHref) {
   return MARKDOWN_NAME.test(url.pathname) || /\.md(?:own)?\b/iu.test(label)
 }
 
+export function extractMarkdownPath(text) {
+  const normalized = String(text ?? '').replace(/\\/gu, '/').trim()
+  // Tool rows render a relative workspace path after their action label.
+  // Do not accept traversal or an absolute path: Better Sidebar will still
+  // enforce its boundary, but the interceptor should stay conservative too.
+  const match = normalized.match(/(?:^|\s|·|:)([\w.\- /]+\.md(?:own)?)(?:\s|$)/iu)
+  if (!match) return null
+  const path = match[1].trim().replace(/^\.\//u, '')
+  if (path === '' || path.startsWith('/') || path.split('/').some(part => part === '..')) return null
+  return path
+}
+
 export function isSafePreviewUrl(href, locationHref) {
   try {
     const url = new URL(href, locationHref)

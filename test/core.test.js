@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { JSDOM } from 'jsdom'
-import { displayName, isMarkdownOutputLink, isSafePreviewUrl, markdownTabSeed } from '../src/core.js'
+import { displayName, extractMarkdownPath, isMarkdownOutputLink, isSafePreviewUrl, markdownTabSeed } from '../src/core.js'
 
 const page = 'http://127.0.0.1:3080/'
 const anchor = (html) => new JSDOM(html).window.document.querySelector('a')
@@ -10,6 +10,12 @@ test('recognizes markdown paths and visible markdown filenames', () => {
   assert.equal(isMarkdownOutputLink(anchor('<a href="/files/brief.md">Brief</a>'), page), true)
   assert.equal(isMarkdownOutputLink(anchor('<a href="/download?id=7">Brief.md</a>'), page), true)
   assert.equal(isMarkdownOutputLink(anchor('<a href="/files/report.pdf">Report.pdf</a>'), page), false)
+})
+
+test('extracts safe Markdown paths from DSH tool-row labels', () => {
+  assert.equal(extractMarkdownPath('读取 · DSH-better-sidebar/README.md'), 'DSH-better-sidebar/README.md')
+  assert.equal(extractMarkdownPath('读取 · ../secrets.md'), null)
+  assert.equal(extractMarkdownPath('读取 · /etc/notes.md'), null)
 })
 
 test('allows only same-origin http(s) URLs', () => {
